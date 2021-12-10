@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <iomanip>
 
@@ -14,6 +16,78 @@ struct Staff
     Staff *next = nullptr;
 };
 
+struct linkedList
+{
+    Staff *head = nullptr;
+    Staff *tail = nullptr;
+};
+
+inline int conversion(istringstream &records)
+{
+    //get an integer from istringstream and convert the integer to a string
+    string integer;
+    getline(records, integer, ',');
+    return stoi(integer);
+}
+
+int hashFunc(int id)
+{
+    return id % 100;
+}
+void insertData(Staff *current, linkedList staff[100])
+{
+    int index = hashFunc(current->ID);
+
+    if (staff[index].head == nullptr)
+    {
+        staff[index].head = staff[index].tail = current;
+    }
+    else
+    {
+
+        staff[index].tail->next = current;
+        staff[index].tail = staff[index].tail->next;
+    }
+}
+
+void read_csv(linkedList staff[100], const string &filename)
+{
+    //create a ifstream variable
+    ifstream file(filename.c_str());
+
+    //test if file is opened
+    if (file)
+    {
+        // variable declaration
+        string record;
+        istringstream dataFields;
+
+        //get a line from the file
+        while (getline(file, record))
+        {
+
+            Staff *temp = new Staff();
+            //put the line into istringstream
+            dataFields.str(record);
+
+            //reset the state of istringstream
+            dataFields.clear();
+
+            temp->ID = conversion(dataFields);
+            getline(dataFields, temp->position, ',');
+            getline(dataFields, temp->name, ',');
+            temp->salary = conversion(dataFields);
+
+            temp->next = nullptr;
+
+            insertData(temp, staff);
+        }
+    }
+    else
+    {
+        std::cout << "File is not found";
+    }
+}
 //create a new record
 Staff *dataInput()
 {
@@ -40,28 +114,15 @@ Staff *dataInput()
 
     return newStaff;
 }
-int hashFunc(int id)
-{
-    return id % 100;
-}
-void insertData(Staff *current, Staff *staff[100])
-{
-    int index = hashFunc(current->ID);
-
-    if (staff[index] == nullptr)
-    {
-        staff[index] = current;
-    }
-    else
-    {
-        staff[index]->next = current;
-    }
-}
 
 int main()
 {
-    Staff *staff[100] = {nullptr};
-    Staff *data = dataInput();
-    insertData(data, staff);
-    cout << staff[hashFunc(data->ID)]->name;
+    string filename = ".\\dummy.csv";
+    linkedList staff[100];
+
+    //data initialization
+    read_csv(staff, filename);
+
+    //test
+    cout << staff[90].head->next->name;
 }
