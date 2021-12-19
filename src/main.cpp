@@ -1,3 +1,14 @@
+/*
+Subject : CSEB324 Data Structure & Algorithm
+Group name : Coding Behavioural Therapy
+1. Name: Lim Swee Keong		                ID:SW0107281
+2. Name: Muhammad bin Iskandar	            ID:SW0107287
+3. Name: Muhammad Zhamir bin Mohd Zakri		ID:SW0107483
+4. Name: Muhammad Hazim bin Mohd Ridza		ID:SW0107479
+5. Name: Jarmin Anak Jack              		ID:SW0107517
+6. Name: Ali Abudallah Hassan Omar		    ID:SW0107615
+
+*/
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -64,10 +75,7 @@ int getID()
     int ID;
     while (true)
     {
-        string temp;
-        cin >> ws;
-        getline(cin, temp);
-        ID = validation(temp, 90020001, 90020999);
+
         if (ID != -1)
         {
             break;
@@ -87,6 +95,10 @@ int hashFunc(int id)
 }
 void insertData(Staff *current, linkedList staff[100])
 {
+    if (current == nullptr)
+    {
+        return;
+    }
     int index = hashFunc(current->ID);
 
     if (staff[index].head == nullptr)
@@ -153,7 +165,15 @@ Staff *dataInput()
     cout.fill('-');
     cout << " \n";
     cout << "Staff ID No   : ";
-    newStaff->ID = getID();
+    string temp;
+    cin >> ws;
+    getline(cin, temp);
+    newStaff->ID = validation(temp, 90020001, 90020999);
+    if (newStaff->ID == -1)
+    {
+        return nullptr;
+    }
+    //newStaff->ID = getID();
     cout << "Staff Name    : ";
     getline(cin, newStaff->name);
     cout << "Staff Position: ";
@@ -191,7 +211,15 @@ void dataLocation(linkedList staff[100])
     cout.fill('-');
     cout << " \n";
     cout << "Enter ID No   : ";
-    staffID = getID();
+    string temp;
+    cin >> ws;
+    getline(cin, temp);
+    staffID = validation(temp, 90020001, 90020999);
+    if (staffID == -1)
+    {
+        return;
+    }
+    //staffID = getID();
     int index = hashFunc(staffID);
     int nodeCounter = 1;
     Staff *nodePtr = staff[index].head;
@@ -254,7 +282,7 @@ int main()
     linkedList staff[100] = {linkedList{nullptr, nullptr}};
     //read dummy data
 
-    string filename = ".\\dummy.csv";
+    string filename = "..\\resources\\dummy.csv";
     read_csv(staff, filename);
 
     cout << "STAFF RECORD 2021" << endl;
